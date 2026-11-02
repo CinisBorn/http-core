@@ -8,21 +8,30 @@ use std::collections::HashMap;
 pub enum StatusCode {
     /// Represents the HTTP status code: `200`.
     Ok,
-    /// Represents the HTTP status code: `404`.
-    NotFound,
-    /// Represents the HTTP status code: `405`.
-    MethodNotAllowed(Vec<Method>),
-    /// Represents the HTTP status code: `400`.
-    BadRequest,
     /// Represents the HTTP status code: `204`.
     NoContent,
     /// Represents the HTTP status code: `304`.
     NotModified,
+    /// Represents the HTTP status code: `400`.
+    BadRequest,
+    /// Represents the HTTP status code: `404`.
+    NotFound,
+    /// Represents the HTTP status code: `405`.
+    MethodNotAllowed(Vec<Method>),
+    /// The request contains a message body, but neither the `Transfer-Encoding`  nor 
+    /// `Content-Length` header is present.
+    /// 
+    /// Represents the HTTP status code: `411` 
+    LengthRequired,
     /// Represents the HTTP status code: `505`.
     HttpVersionNotSupported,
     /// Represents the HTTP status code: `500`.
     InternalServerError,
-    /// Represents the HTTP status code: `503.
+    /// The message body encoding is not supported. 
+    /// 
+    /// Represents the HTTP status code `501`..  
+    NotImplemented,
+    /// Represents the HTTP status code: `503` .
     ServiceUnavailable,
 }
 
@@ -31,14 +40,16 @@ impl StatusCode {
     pub fn code(&self) -> String {
         match self {
             Self::Ok => 200.to_string(),
-            Self::BadRequest => 400.to_string(),
-            Self::NotFound => 404.to_string(),
             Self::NoContent => 204.to_string(),
             Self::NotModified => 304.to_string(),
-            Self::HttpVersionNotSupported => 505.to_string(),
+            Self::BadRequest => 400.to_string(),
+            Self::NotFound => 404.to_string(),
             Self::MethodNotAllowed(_) => 405.to_string(),
+            Self::LengthRequired => 411.to_string(),
             Self::InternalServerError => 500.to_string(),
+            Self::NotImplemented => 501.to_string(),
             Self::ServiceUnavailable => 503.to_string(),
+            Self::HttpVersionNotSupported => 505.to_string()
         }
     }
 }
