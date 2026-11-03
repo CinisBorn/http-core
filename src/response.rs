@@ -18,11 +18,27 @@ pub enum StatusCode {
     NotFound,
     /// Represents the HTTP status code: `405`.
     MethodNotAllowed(Vec<Method>),
+    /// The request exceeded the time duration specified by the server.
+    /// 
+    /// Represents the HTTP status code: `408`.
+    RequestTimeout,
     /// The request contains a message body, but neither the `Transfer-Encoding`  nor 
     /// `Content-Length` header is present.
     /// 
     /// Represents the HTTP status code: `411` 
     LengthRequired,
+    /// The message body exceeded the max size specified by the server.
+    /// 
+    /// Represents the HTTP status code: `413`.
+    ContentTooLarge,
+    /// The header request exceeded the max number of fields.
+    /// 
+    /// Represents the HTTP status code: `431`.
+    RequestHeaderFieldsTooLarge,
+    /// The request uri exceeded the max size.
+    /// 
+    /// Represents the HTTP status code: `414`.
+    UriTooLong,
     /// Represents the HTTP status code: `505`.
     HttpVersionNotSupported,
     /// Represents the HTTP status code: `500`.
@@ -45,7 +61,11 @@ impl StatusCode {
             Self::BadRequest => 400.to_string(),
             Self::NotFound => 404.to_string(),
             Self::MethodNotAllowed(_) => 405.to_string(),
+            Self::RequestTimeout => 408.to_string(),
             Self::LengthRequired => 411.to_string(),
+            Self::ContentTooLarge => 413.to_string(),
+            Self::UriTooLong => 414.to_string(),
+            Self::RequestHeaderFieldsTooLarge => 431.to_string(),
             Self::InternalServerError => 500.to_string(),
             Self::NotImplemented => 501.to_string(),
             Self::ServiceUnavailable => 503.to_string(),
