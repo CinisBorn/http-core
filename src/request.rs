@@ -67,7 +67,7 @@ impl RequestLine {
 pub struct Request {
     start_line: RequestLine,
     headers: Option<HashMap<String, String>>,
-    body: Option<String>,
+    body: Option<Vec<u8>>,
 }
 
 impl Request {
@@ -75,7 +75,7 @@ impl Request {
     pub fn new(
         start_line: RequestLine,
         headers: Option<HashMap<String, String>>,
-        body: Option<String>,
+        body: Option<Vec<u8>>,
     ) -> Self {
         Self {
             start_line,
@@ -95,8 +95,8 @@ impl Request {
     }
 
     /// Returns the body of request.
-    pub fn body(&self) -> Option<&String> {
-        self.body.as_ref()
+    pub fn body(&self) -> Option<&[u8]> {
+        self.body.as_deref()
     }
 
     /// Returns the connection header of request if any.
