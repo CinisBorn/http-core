@@ -3,7 +3,7 @@
 pub mod request;
 pub mod response;
 
-/// The HTTP method of `Request`.
+/// Supported HTTP methods
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum Method {
@@ -68,17 +68,19 @@ impl Method {
         }
     }
 
-    /// Converts a [`Method`] into [`&str`]
+    /// Converts a [`Method`] into [`&str`].
+    /// 
+    /// The returned value is in uppercase.
     pub fn to_str(&self) -> &str {
         match self {
             Method::CONNECT => "CONNECT",
-            Method::DELETE => "DELETE",
-            Method::GET => "GET",
-            Method::HEAD => "HEAD",
+            Method::DELETE  => "DELETE",
+            Method::GET     => "GET",
+            Method::HEAD    => "HEAD",
             Method::OPTIONS => "OPTIONS",
-            Method::PATCH => "PATCH",
-            Method::POST => "POST",
-            Method::PUT => "PUT",
+            Method::PATCH   => "PATCH",
+            Method::POST    => "POST",
+            Method::PUT     => "PUT",
         }
     }
 }

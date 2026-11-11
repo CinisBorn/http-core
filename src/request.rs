@@ -4,32 +4,49 @@ use std::collections::HashMap;
 
 use crate::Method;
 
-/// The available supported HTTP methods.
-#[derive(Debug)]
+/// Supported HTTP versions. 
+/// 
+/// 
+#[derive(Debug, PartialEq, Clone)]
 pub enum HttpVersion {
-    /// Represents the HTTP/1.1
-    ///
-    /// Older version won't be supported.
-    V1, // aka HTTP/1.1
-    /// Represents the unsupported http version.
+    /// The HTTP/1.1 version.
+    /// 
+    /// Older version such as HTTP/0.9 or HTTP/1.0 won't 
+    /// be supported in the future.
+    V1,
+    /// Unsupported HTTP version. 
+    /// 
+    /// This variant carries the unsupported 
+    /// HTTP version.
     Unsupported(String),
 }
 
 impl HttpVersion {
-    /// Maps a string into [`HttpVersion`]
-    pub fn map(version: &str) -> Self {
+    /// Creates a [`HttpVersion`] from a `String`.
+    /// 
+    /// `version` is case sensitive:
+    /// ```no_run
+    /// # use http_core::request::HttpVersion;
+    /// assert_eq!(HttpVersion::from("HTTP/1.1"), HttpVersion::V1) // it works 
+    /// ```
+    /// If it's not possible create a `HttpVersion` from a `String`, the
+    /// [`HttpVersion::Unsupported`] variant is returned.
+    pub fn from(version: &str) -> Self {
         match version {
             "HTTP/1.1" => HttpVersion::V1,
-            v => HttpVersion::Unsupported(v.to_string()), // v = version
+            v => HttpVersion::Unsupported(v.to_string()),
         }
     }
 }
 
 #[derive(Debug)]
-/// The request start line. See more at
+/// The request line.
+/// 
+/// It contains information about the HTTP version, 
+/// method and target of [`Request`].
+/// 
+/// See more at
 /// [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112.html#name-message)
-///
-/// The HTTP version isn't necessary because this parser will forever support only http/1.1
 pub struct RequestLine {
     version: HttpVersion,
     method: Method,
@@ -37,32 +54,41 @@ pub struct RequestLine {
 }
 
 impl RequestLine {
-    /// Creates a new instance of `RequestLine`.
-    pub fn new(version: HttpVersion, method: Method, target: String) -> Self {
+    /// Builds a new instance of `RequestLine`.
+    pub fn build(version: HttpVersion, method: Method, target: &str) -> Self {
         Self {
             version,
             method,
-            target,
+            target: target.to_string(),
         }
     }
 
-    /// Returns the HTTP method.
-    pub fn method(&self) -> &Method {
-        &self.method
+    /// Returns the HTTP method of [`Request`].
+    /// 
+    /// See more at [`Method`].
+    pub fn method(&self) -> Method {
+        self.method
     }
 
-    /// Returns the target resource.
+    /// Returns a reference to the target resource 
+    /// of [`Request`].
     pub fn target(&self) -> &str {
         &self.target
     }
 
-    /// Returns the HTTP version of request
+    /// Returns a reference to the HTTP 
+    /// version of [`Request`]
     pub fn version(&self) -> &HttpVersion {
         &self.version
     }
 }
 
-/// Represents the client request.
+/// The client request. 
+/// 
+/// Contains information about request line, headers and 
+/// message body.
+/// 
+/// See more about request line at [`RequestLine`].
 #[derive(Debug)]
 pub struct Request {
     start_line: RequestLine,
@@ -71,8 +97,8 @@ pub struct Request {
 }
 
 impl Request {
-    /// Creates a new structured client `Request`.
-    pub fn new(
+    /// Builds a new `Request` instance.
+    pub fn build(
         start_line: RequestLine,
         headers: Option<HashMap<String, String>>,
         body: Option<Vec<u8>>,
@@ -84,27 +110,30 @@ impl Request {
         }
     }
 
-    /// Returns the request's  start line.
-    pub fn start_line(&self) -> &RequestLine {
+    /// Returns a reference to the [`RequestLine`].
+    pub fn request_line(&self) -> &RequestLine {
         &self.start_line
     }
 
-    /// Returns the headers of request
+    /// Returns a reference to the request [`Headers`].
     pub fn headers(&self) -> Option<&HashMap<String, String>> {
         self.headers.as_ref()
     }
 
-    /// Returns the body of request.
+    /// Returns a reference to the request message body.
     pub fn body(&self) -> Option<&[u8]> {
         self.body.as_deref()
     }
 
-    /// Returns the connection header of request if any.
+    /// Returns the `Connection` header of request if any.
+    /// 
+    /// This is an utility for help callers to reduce 
+    /// boilerplate.
     pub fn connection(&self) -> Option<&str> {
         if let Some(headers) = self.headers() {
-            headers.get("Connection").map(|v| v.as_ref())            
-        } else {
-            None
+            return headers.get("Connection").map(|v| v.as_ref())            
         }
+
+        None
     }
 }
