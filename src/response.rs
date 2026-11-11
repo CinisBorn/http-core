@@ -82,16 +82,17 @@ pub struct Response {
     body: Option<Vec<u8>>,
 }
 
-impl Response {
-    /// Builds a new HTTP [`Response`]
-    pub fn new() -> Self {
+impl Default for Response {
+    fn default() -> Self {
         Self {
             status: StatusCode::Ok, // temporary default value
             headers: HashMap::new(),
             body: None,
         }
     }
+}
 
+impl Response {
     /// Creates a new [`Response`] with a status code: `500`.
     pub fn internal_error(body: Option<&[u8]>) -> Self {
         Self {
