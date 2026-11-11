@@ -105,19 +105,19 @@ impl ResponseData for Response {
         self.status = value;
     }
 
-    fn get_headers_mut(&mut self) -> &mut HashMap<String, String> {
+    fn headers_mut(&mut self) -> &mut HashMap<String, String> {
         &mut self.headers
     }
 
-    fn get_body(&self) -> Option<&Vec<u8>> {
+    fn body(&self) -> Option<&Vec<u8>> {
         self.body.as_ref()
     }
 
-    fn get_status(&self) -> &StatusCode {
+    fn status(&self) -> &StatusCode {
         &self.status
     }
 
-    fn get_headers(&self) -> &HashMap<String, String> {
+    fn headers(&self) -> &HashMap<String, String> {
         &self.headers
     }
 }
@@ -167,11 +167,11 @@ pub trait ResponseData {
     /// ```
     fn set_status(&mut self, value: StatusCode);
     /// Gets a mutable reference to the response headers.
-    fn get_headers_mut(&mut self) -> &mut HashMap<String, String>;
+    fn headers_mut(&mut self) -> &mut HashMap<String, String>;
     /// Gets a referece to the [`Response`] body.
-    fn get_body(&self) -> Option<&Vec<u8>>;
+    fn body(&self) -> Option<&Vec<u8>>;
     /// Gets a reference to the [`Response`] status code.
-    fn get_status(&self) -> &StatusCode;
+    fn status(&self) -> &StatusCode;
     /// Gets a reference to the [`Response`] headers.
-    fn get_headers(&self) -> &HashMap<String, String>;
+    fn headers(&self) -> &HashMap<String, String>;
 }
