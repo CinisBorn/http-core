@@ -92,17 +92,6 @@ impl Default for Response {
     }
 }
 
-impl Response {
-    /// Creates a new [`Response`] with a status code: `500`.
-    pub fn internal_error(body: Option<&[u8]>) -> Self {
-        Self {
-            status: StatusCode::InternalServerError,
-            headers: HashMap::new(),
-            body: body.map(|c| c.to_vec()),
-        }
-    }
-}
-
 impl ResponseData for Response {
     fn set_headers(&mut self, value: HashMap<String, String>) {
         self.headers = value;
