@@ -1,4 +1,4 @@
-//! Contains core http types and tools.
+#![doc = include_str!("../README.md")]
 
 pub mod request;
 pub mod response;
