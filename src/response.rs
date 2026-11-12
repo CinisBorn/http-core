@@ -3,51 +3,79 @@
 use crate::Method;
 use std::collections::HashMap;
 
-/// The response code status.
+/// The response status code.
+/// 
+/// Contains variants representing HTTP status code. This `enum` is 
+/// not exhaustive and it may support new status code in the future.
 #[derive(Debug, Clone)]
 pub enum StatusCode {
-    /// Represents the HTTP status code: `200`.
+    /// The HTTP status code `200`.
+    /// 
+    /// Represents a successful request.
     Ok,
-    /// Represents the HTTP status code: `204`.
+    /// The HTTP status code `204`.
+    /// 
+    /// Represents a successful request, but there 
+    /// is not content send back in the response 
+    /// body.
     NoContent,
-    /// Represents the HTTP status code: `304`.
+    /// The HTTP status code `304`.
+    /// 
+    /// requested resource has not changed since 
+    /// the version the client already has.
     NotModified,
-    /// Represents the HTTP status code: `400`.
+    /// The HTTP status code `400`.
+    /// 
+    /// Represents an error from client-side.
     BadRequest,
-    /// Represents the HTTP status code: `404`.
+    /// The HTTP status code `404`.
+    /// 
+    /// The requested resource was not found.
     NotFound,
-    /// Represents the HTTP status code: `405`.
+    /// The HTTP status code `405`.
+    /// 
+    /// The server knows the method, but the target 
+    /// resource doesn't support this method.
     MethodNotAllowed(Vec<Method>),
-    /// The request exceeded the time duration specified by the server.
+    /// The HTTP status code `408`.
     /// 
-    /// Represents the HTTP status code: `408`.
+    /// The request expired. The connection will be closed.
     RequestTimeout,
-    /// The request contains a message body, but neither the `Transfer-Encoding`  nor 
-    /// `Content-Length` header is present.
+    /// The HTTP status code `411` 
     /// 
-    /// Represents the HTTP status code: `411` 
+    /// The request contains a message body, but neither the 
+    /// `Transfer-Encoding` nor `Content-Length` header is present.
     LengthRequired,
-    /// The message body exceeded the max size specified by the server.
+    /// The HTTP status code `413`.
     /// 
-    /// Represents the HTTP status code: `413`.
+    /// The message body is too large.
     ContentTooLarge,
-    /// The header request exceeded the max number of fields.
+    /// The HTTP status code `431`.
     /// 
-    /// Represents the HTTP status code: `431`.
+    /// There are two scenarions where this error can be returned:
+    /// 
+    /// - The request header size is too large.
+    /// - The header is numerous.
     RequestHeaderFieldsTooLarge,
-    /// The request uri exceeded the max size.
+    /// The HTTP status code `414`.
     /// 
-    /// Represents the HTTP status code: `414`.
+    /// The request uri is too large/long.
     UriTooLong,
-    /// Represents the HTTP status code: `505`.
-    HttpVersionNotSupported,
-    /// Represents the HTTP status code: `500`.
-    InternalServerError,
-    /// The message body encoding is not supported. 
+    /// HTTP status code `505`.
     /// 
-    /// Represents the HTTP status code `501`..  
+    /// The HTTP version is not supported by server.
+    HttpVersionNotSupported,
+    /// The HTTP status code `500`.
+    /// 
+    /// A server-side error occuried. 
+    InternalServerError,
+    /// The HTTP status code `501`..  
+    /// 
+    /// The message body encoding is not supported. 
     NotImplemented,
-    /// Represents the HTTP status code: `503` .
+    /// The HTTP status code `503`.
+    /// 
+    /// The server is busy.
     ServiceUnavailable,
 }
 
@@ -75,7 +103,16 @@ impl StatusCode {
 }
 
 #[derive(Debug)]
-/// Represents a HTTP Response
+/// A HTTP response.
+/// 
+/// The response contains information about the state of resource, request 
+/// and so on...
+/// 
+/// A `Response` is initialized with: [`Response::default`]. The caller may
+/// set a `body`, `header` and [`StatusCode`].
+/// 
+/// By default, the response status code is [`StatusCode::Ok`] 
+/// with no header and no message body.
 pub struct Response {
     status: StatusCode,
     headers: HashMap<String, String>,
@@ -85,7 +122,7 @@ pub struct Response {
 impl Default for Response {
     fn default() -> Self {
         Self {
-            status: StatusCode::Ok, // temporary default value
+            status: StatusCode::Ok,
             headers: HashMap::new(),
             body: None,
         }
